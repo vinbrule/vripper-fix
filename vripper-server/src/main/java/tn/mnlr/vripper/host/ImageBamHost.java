@@ -2,6 +2,8 @@ package tn.mnlr.vripper.host;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.client.protocol.HttpClientContext;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -44,6 +46,11 @@ public class ImageBamHost extends Host {
   @Override
   public HostService.NameUrl getNameAndUrl(final String url, final HttpClientContext context)
       throws HostException {
+    context.setCookieStore(new BasicCookieStore());
+    BasicClientCookie cookie = new BasicClientCookie("nsfw_inter", "1");
+    cookie.setDomain("www.imagebam.com");
+//    cookie.setExpiryDate(date);
+    context.getCookieStore().addCookie(cookie);
 
     HostService.Response response = hostService.getResponse(url, context);
     Document doc = response.getDocument();
